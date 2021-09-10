@@ -18,3 +18,6 @@ docker-compose down -v
 
 ## To check if something goes wrong
 docker-compose logs -f
+
+# TESTING
+export PYTHONPATH="${PYTHONPATH}:/Users/david/__PYTHON/WSGI/mywsgi/app/"
