@@ -1,5 +1,5 @@
 from os import name
-from server import Server
+from myserver import MyServer
 import unittest, socket
 import threading
 import time
@@ -8,7 +8,7 @@ class MouckUpServer:
     def __init__(self) -> None:
         self.address = "127.0.0.1"
         self.port = 8000
-        self.server = Server(self.address, self.port)
+        self.server = MyServer(self.address, self.port)
         self.server.serve()
     
     def shutdown(self):
@@ -27,16 +27,26 @@ class MouckUpClient:
 
 class TestServer(unittest.TestCase):
 
-    def setUp(self) -> None:
-        self.oneworker = threading.Thread(target=self.worker, \
-            name="my_mockup_server", daemon=True)
-        self.oneworker.start()
+    # def setUp(self) -> None:
+    #     self.server = None
+    #     self.stop_thread = False
+    #     self.oneworker = threading.Thread(
+    #         target=self.worker,
+    #         name="my_mockup_server", 
+    #         args=(id, lambda: self.stop_thread), 
+    #         daemon=True)
+    #     self.oneworker.start()
 
-    def worker(self):
-        self.server = MouckUpServer()
+    # def worker(self, id, stop_thread):
+    #     while True:
+    #         if self.server == None:
+    #             self.server = MouckUpServer()
+    #         elif stop_thread:
+    #             self.server.shutdown()
             
-    def tearDown(self) -> None:
-        self.oneworker.join(1)
+    # def tearDown(self) -> None:
+    #     self.stop_thread = True
+    #     self.oneworker.join(1)
 
 
     def test_server_port_is_opened(self):
@@ -49,7 +59,7 @@ class TestServer(unittest.TestCase):
         time.sleep(0.3)
         c = MouckUpClient()
         c.connect()
-        sent = c.listenfd.sendall("ECHO A".encode())
+        sent = c.listenfd.send("ECHO A".encode())
         self.assertEqual('ECHO A', c.listenfd.recv(1024).decode())
         c.listenfd.close()
     

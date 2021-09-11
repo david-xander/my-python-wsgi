@@ -1,9 +1,9 @@
 import socket, select, sys
-import Request
 
 class SocketHandler:
 
     def __init__(self, listenfd=None):
+        self.stop_worker = False
         self.MSGLEN = 4096
         if listenfd is None:
             self.listenfd = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -18,6 +18,9 @@ class SocketHandler:
             sent = self.listenfd.send(msg)
         except:
             self.listenfd.close()
+        
+        # if self.stop_worker:
+        #     break
     
     def receive(self):
         chunk = ""
@@ -27,4 +30,13 @@ class SocketHandler:
                 self.listenfd.close()
         except:
             pass
-        return chunk
+
+        self.send(chunk)
+
+        # if self.stop_worker:
+        #     break
+    
+    def process(self):
+        cosa = self.receive()
+        self.send( cosa )
+    
